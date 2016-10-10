@@ -1,0 +1,7 @@
+1) ncks wrfout    \
+                   as a function of domain
+2) create ASCII   /
+
+3) code to merge different ASCII files
+
+4) netcdf for merged file
