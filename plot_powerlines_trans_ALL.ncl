@@ -241,7 +241,7 @@ wcStrt     = systemfunc("date")
   ;-----------------------------------------------------------------------------  
   dir      = "."
   type     = "ps"
-  type@wkBackgroundOpacityF = 0.0 
+  ;type@wkBackgroundOpacityF = 0.0 
   if (dom .eq. 4 .OR. dom .eq. 7 .OR.dom.eq.8) then
           lbpos    = 1.1
 	  lbxp     = -1.
@@ -383,7 +383,7 @@ wcStrt     = systemfunc("date")
       file_out = out_dirdate+"/"+sprinti("d%i",dom)+ "_"+local_date+\
                  "_trans_icingINST"
       wks = gsn_open_wks(type,file_out)
-     cmaprh = (/"(/1.00, 1.00, 1.00/)", "(/0.00, 0.00, 0.00/)", "(/1.00, 1.00, 0.98/)", \
+     cmaprh = (/"(/1.00, 1.00, 1.00/)", "(/0.00, 0.00, 0.00/)", "(/0.90, 0.90, 0.90/)", \
            "(/0.486275,0.996078,0.988235/)","(/0.988235,0.870588,0.0156863/)","(/0.988235,0.52549,0.0156863/)", \
            "(/0.831373,0.00784314,0.203922/)","(/0.45098,0.00784314,0.392157/)"/)
 
@@ -396,13 +396,14 @@ wcStrt     = systemfunc("date")
       mpres = res
   mpres@mpDataBaseVersion = "MediumRes"
   ;mpres@mpDataBaseVersion = "HighRes"
-  mpres@mpOutlineSpecifiers = (/"China:states"/)
+  ;mpres@mpOutlineSpecifiers = (/"China:states"/)
   mpres@mpOutlineBoundarySets = "National"
   mpres@mpDataSetName = "Earth..4"
   mpres@mpGeophysicalLineColor = "Black";"DarkBrown"     ; color of continental outlines
   mpres@mpNationalLineColor     = "Black";"DarkBrown"
   mpres@mpUSStateLineColor     = "Black";"DarkBrown"
   mpres@mpGridLineDashPattern  = 2         ; lat/lon lines as dashed
+mpres@mpGridAndLimbOn             =False
 
 mpres@gsnMaximize = False
 mpres@gsnPaperOrientation = "portrait"
@@ -633,7 +634,7 @@ mpres@gsnPaperOrientation = "portrait"
                  "_trans_icingACC"
 
       wks = gsn_open_wks(type,file_out)
-      cmaprh = (/"(/1.00, 1.00, 1.00/)", "(/0.00, 0.00, 0.00/)", "(/1.00, 1.00, 0.98/)", \
+      cmaprh = (/"(/1.00, 1.00, 1.00/)", "(/0.00, 0.00, 0.00/)", "(/0.90, 0.90, 0.90/)", \
            "(/0.486275,0.996078,0.988235/)","(/0.988235,0.870588,0.0156863/)","(/0.988235,0.52549,0.0156863/)", \
            "(/0.831373,0.00784314,0.203922/)","(/0.45098,0.00784314,0.392157/)"/)
 
@@ -867,7 +868,7 @@ mpres@gsnPaperOrientation = "portrait"
                  "_trans_lineRH"
 
       wks = gsn_open_wks(type,file_out)
-      cmaprh2 = (/"(/1.00, 1.00, 1.00/)", "(/0.00, 0.00, 0.00/)", "(/1.00, 1.00, 0.98/)", \
+      cmaprh2 = (/"(/1.00, 1.00, 1.00/)", "(/0.00, 0.00, 0.00/)", "(/0.90, 0.90, 0.90/)", \
            "(/.62, .62, .96/)", "(/.76, .76, .98/)", "(/0.86, 0.86, 1.00/)", "(/.51, .82, 1.00/)",\
            "(/.58, .96, .96/)", "(/.73, .96, .73/)", "(/0.55, 0.92, 0.55/)", "(/.36, .82, .36/)", "(/.05, .92, .05/)"/)
 

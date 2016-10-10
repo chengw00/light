@@ -170,6 +170,8 @@ cp -p $CODEDIR/$FILE_STN_NAME .
 cp -p $CODEDIR/*.exe .
 cp -p $CODEDIR/*.csh .
 cp -p $CODEDIR/*.ncl .
+cp -p $CODEDIR/*.png .
+cp -p $CODEDIR/*.pl .
 
 rm -f line_latlon_all_use.txt
 rm -f stn_list_all_use.txt
@@ -516,15 +518,22 @@ EOF
     endif
    end
 
+   # ======
+   # 2016-01-03: YBL script
+   cp -p $CODEDIR/*.png icing_plots/${yrw}${mnw}${dyw}${hrw}
+   cp -p $CODEDIR/*.pl  icing_plots/${yrw}${mnw}${dyw}${hrw}
+   cd icing_plots/${yrw}${mnw}${dyw}${hrw}
+   d3.icing_maps_overlay.pl
+   cd $WORKDIR/$TYPE
+
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $RUNNING_IMAGES
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $ARC_IMAGES/$TYPE
    
 #add by yliu 20160103
-   cd $RUNNING_IMAGES 
-    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
-   cd $ARC_IMAGES/$TYPE
-    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
-#
+#   cd $RUNNING_IMAGES 
+#    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
+#   cd $ARC_IMAGES/$TYPE
+#    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
 
   endif
  endif
@@ -543,6 +552,8 @@ cp -p $CODEDIR/$FILE_STN_NAME .
 cp -p $CODEDIR/*.exe .
 cp -p $CODEDIR/*.csh .
 cp -p $CODEDIR/*.ncl .
+cp -p $CODEDIR/*.png .
+cp -p $CODEDIR/*.pl .
 
 rm -f line_latlon_all_use.txt
 rm -f stn_list_all_use.txt
@@ -884,15 +895,22 @@ EOF
     endif
    end
 
+   # ======
+   # 2016-01-03: YBL script
+   cp -p $CODEDIR/*.png icing_plots/${yrw}${mnw}${dyw}${hrw}
+   cp -p $CODEDIR/*.pl  icing_plots/${yrw}${mnw}${dyw}${hrw}
+   cd icing_plots/${yrw}${mnw}${dyw}${hrw}
+   d3.icing_maps_overlay.pl
+   cd $WORKDIR/$TYPE
+
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $RUNNING_IMAGES
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $ARC_IMAGES/$TYPE
  
 #add by yliu 20160103
-   cd $RUNNING_IMAGES 
-    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
-   cd $ARC_IMAGES/$TYPE
-    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
-#
+#   cd $RUNNING_IMAGES 
+#    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
+#   cd $ARC_IMAGES/$TYPE
+#    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
 
   endif
  endif
