@@ -25,7 +25,7 @@ echo "actually clean $GMID "
 
 set LOGIN = ` whoami `
 
-set PATH = /home/${LOGIN}/data/cycles/$GMID/prod/$MEMBER/icing/working
+set PATH = /home1/${LOGIN}/data/cycles/$GMID/prod/$MEMBER/icing/working
 
 set filelist = ` /bin/ls -1 $PATH `
 
@@ -45,7 +45,7 @@ set AGE_LIMIT = 1036800    # 12 days in sec, files will be processed
                            # when its age exceeds this time
                            #
                            #
-set PATH = /home/${LOGIN}/data/cycles/$GMID/prod/$MEMBER/icing/running
+set PATH = /home1/${LOGIN}/data/cycles/$GMID/prod/$MEMBER/icing/running
 
 set DIR = ( netcdf ascii ascii_2d )
 
@@ -69,7 +69,7 @@ set AGE_LIMIT = 172800   # 2 days in sec, files will be processed
                            # when its age exceeds this time
                            #
                            #
-set PATH = /home/${LOGIN}/data/cycles/$GMID/prod/$MEMBER/icing/running
+set PATH = /home1/${LOGIN}/data/cycles/$GMID/prod/$MEMBER/icing/running
 
 set DIR = ( images )
 

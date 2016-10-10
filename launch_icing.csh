@@ -12,7 +12,7 @@ set LOGIN = ` whoami `
 
 
 # ====
-set PATH_OUT = /home/$LOGIN/data/GMODJOBS/GE7CHUAN/housekeeping/icing
+set PATH_OUT = /home1/$LOGIN/data/GMODJOBS/GE7CHUAN/housekeeping/icing
 
 ssh node$NODE -v << EOF
 cd $PATH_OUT

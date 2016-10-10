@@ -2,7 +2,7 @@
 
 set LOGIN = ` whoami `
 
-#set HOME = /home/$LOGIN/vtmp20150721
+#set HOME = /home1/$LOGIN/vtmp20150721
 
 #set NODE = ( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 )
 #set NODE = ( 1 2 3 4 5 6 7 8 )
@@ -19,17 +19,17 @@ if ( $1 == "" || $2 == "" ) then
  exit
 endif
 
-set HOME = /home/$LOGIN/data/GMODJOBS/$GMID/housekeeping/icing
+set HOME = /home1/$LOGIN/data/GMODJOBS/$GMID/housekeeping/icing
 
 # =================
 foreach nn ( $NODE )
 
-ssh node$nn -v  << EOF
+#ssh node$nn -v  << EOF
 $HOME/killjobs_icing.csh $HOME node$nn
 $HOME/killjobs_icing.csh $HOME node$nn
 $HOME/killjobs_icing.csh $HOME node$nn
-logout
-EOF
+#logout
+#EOF
 
 end
 

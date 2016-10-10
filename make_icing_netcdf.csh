@@ -16,7 +16,7 @@ else
  set FCST_HOUR = $2
 endif
 
-set VALID_TIME = ` /home/$LOGIN/bin/advance_cymdh.pl $CYCLE $FCST_HOUR `
+set VALID_TIME = ` /home1/$LOGIN/bin/advance_cymdh.pl $CYCLE $FCST_HOUR `
 
 # =======
 set yrv = ` echo $VALID_TIME | cut -c1-4 `

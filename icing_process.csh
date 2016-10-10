@@ -11,7 +11,7 @@ set FILE_STN_NAME = stn_list_all_3000m.txt
 set NBACK = ( -48 -47 -46 -45 -44 -43 -42 -41 -40 -39 -38 -37 -36 -35 -34 -33 -32 -31 -30 -29 -28 -27 -26 -25 -24 -23 -22 -21 -20 -19 -18 -17 -16 -15 -14 -13 -12 -11 -10 -9 -8 -7 -6 -5 -4 -3 -2 -1 )
 
 # ==============
-if ( ! -e /home/$LOGIN/bin/advance_cymdh.pl ) then
+if ( ! -e /home1/$LOGIN/bin/advance_cymdh.pl ) then
  echo "ERROR advance_cymdh.pl MISSING: exit"
  exit
 endif
@@ -76,7 +76,7 @@ else if ( $CYCINT == 3 ) then
  # ==========
  if ( $hr_use >= 0 && $hr_use < 3 ) then
   # need to find cycle 24-h ago
-  set cycle_day_ago = `perl /home/${LOGIN}/bin/advance_cymdh.pl $yr$mn$dy$hr -24 `
+  set cycle_day_ago = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $yr$mn$dy$hr -24 `
   set yr = ` echo $cycle_day_ago | cut -c1-4 `
   set mn = ` echo $cycle_day_ago | cut -c5-6 `
   set dy = ` echo $cycle_day_ago | cut -c7-8 `
@@ -115,27 +115,27 @@ set CYCLE = $yr$mn$dy$hr
 echo $CYCLE
 
 # =======
-set CYCDIR = /home/$LOGIN/data/cycles/$GMID/$MEMBER/$CYCLE
+set CYCDIR = /home1/$LOGIN/data/cycles/$GMID/$MEMBER/$CYCLE
 
-set CODEDIR = /home/$LOGIN/data/GMODJOBS/$GMID/housekeeping/icing
+set CODEDIR = /home1/$LOGIN/data/GMODJOBS/$GMID/housekeeping/icing
 
-set WORKDIR = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/$CYCLE
+set WORKDIR = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/$CYCLE
 
-set ARC_ASCII = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/ascii/$yr/$yr$mn/$CYCLE
+set ARC_ASCII = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/ascii/$yr/$yr$mn/$CYCLE
 
-set ARC_ASCII_2D = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/ascii_2d/$yr/$yr$mn/$CYCLE
+set ARC_ASCII_2D = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/ascii_2d/$yr/$yr$mn/$CYCLE
 
-set ARC_NCF = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/netcdf/$yr/$yr$mn/$CYCLE
+set ARC_NCF = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/netcdf/$yr/$yr$mn/$CYCLE
 
-set ARC_IMAGES = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/images/$yr/$yr$mn/$CYCLE
+set ARC_IMAGES = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/archive/images/$yr/$yr$mn/$CYCLE
 
-set RUNNING_ASCII = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/ascii
+set RUNNING_ASCII = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/ascii
 
-set RUNNING_ASCII_2D = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/ascii_2d
+set RUNNING_ASCII_2D = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/ascii_2d
 
-set RUNNING_NCF = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/netcdf
+set RUNNING_NCF = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/netcdf
 
-set RUNNING_IMAGES = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/images
+set RUNNING_IMAGES = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/running/images
 
 # =============
 rm -r -f $WORKDIR
@@ -182,7 +182,7 @@ ln -sf $FILE_STN_NAME   stn_list_all_use.txt
 LOOP1:
  @ ncount = $ncount + 1
  if ( $ncount > 0 ) goto EXIT1
- set time_now = `perl /home/${LOGIN}/bin/advance_cymdh.pl $CYCLE $ncount `
+ set time_now = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $CYCLE $ncount `
  set yrw = ` echo $time_now |  cut -c1-4 `
  set mnw = ` echo $time_now |  cut -c5-6 `
  set dyw = ` echo $time_now |  cut -c7-8 `
@@ -220,15 +220,15 @@ WAIT1:
    if ( $filesize[1] >= $wrffilesize ) then
     ncks -O -d bottom_top,0,5 -d bottom_top_stag,0,6 $CYCDIR/$TYPE/$FILE1 -o ${FILE1}.nc
     # WRF_F
-    set time_old = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
+    set time_old = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
     set yro = ` echo $time_old |  cut -c1-4 `
     set mno = ` echo $time_old |  cut -c5-6 `
     set dyo = ` echo $time_old |  cut -c7-8 `
     set hro = ` echo $time_old |  cut -c9-10 `
 
-    set CYCLE_OLD = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
+    set CYCLE_OLD = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
     if ( $ncount == -$CYCINT ) then
-     set wrf_old = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE_OLD}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
+     set wrf_old = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE_OLD}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     else
      set wrf_old = wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     endif
@@ -263,7 +263,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -293,7 +293,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -335,15 +335,15 @@ EOF
     ncks -O -d bottom_top,0,5 -d bottom_top_stag,0,6 $CYCDIR/$FILE2 -o ${FILE1}.nc
 
     # WRF_F
-    set time_old = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
+    set time_old = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
     set yro = ` echo $time_old |  cut -c1-4 `
     set mno = ` echo $time_old |  cut -c5-6 `
     set dyo = ` echo $time_old |  cut -c7-8 `
     set hro = ` echo $time_old |  cut -c9-10 `
 
-    set CYCLE_OLD = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
+    set CYCLE_OLD = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
     if ( $ncount == -$CYCINT ) then
-     set wrf_old = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE_OLD}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
+     set wrf_old = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE_OLD}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     else
      set wrf_old = wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     endif
@@ -378,7 +378,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -408,7 +408,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -518,6 +518,13 @@ EOF
 
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $RUNNING_IMAGES
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $ARC_IMAGES/$TYPE
+   
+#add by yliu 20160103
+   cd $RUNNING_IMAGES 
+    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
+   cd $ARC_IMAGES/$TYPE
+    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
+#
 
   endif
  endif
@@ -548,7 +555,7 @@ set ncount = -1
 LOOP2:
  @ ncount = $ncount + 1
  if ( $ncount > $NUMFCST ) goto EXIT2
- set time_now = `perl /home/${LOGIN}/bin/advance_cymdh.pl $CYCLE $ncount `
+ set time_now = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $CYCLE $ncount `
  set yrw = ` echo $time_now |  cut -c1-4 `
  set mnw = ` echo $time_now |  cut -c5-6 `
  set dyw = ` echo $time_now |  cut -c7-8 `
@@ -589,15 +596,15 @@ WAIT2:
    if ( $filesize[1] >= $wrffilesize ) then
     ncks -O -d bottom_top,0,5 -d bottom_top_stag,0,6 $CYCDIR/$TYPE/$FILE1 -o ${FILE1}.nc
     # WRF_P
-    set time_old = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
+    set time_old = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
     set yro = ` echo $time_old |  cut -c1-4 `
     set mno = ` echo $time_old |  cut -c5-6 `
     set dyo = ` echo $time_old |  cut -c7-8 `
     set hro = ` echo $time_old |  cut -c9-10 `
 
-    set CYCLE_OLD = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
+    set CYCLE_OLD = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
     if ( $ncount == 0 ) then
-     set wrf_old = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
+     set wrf_old = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     else
      set wrf_old = wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     endif
@@ -633,7 +640,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -663,7 +670,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -704,15 +711,15 @@ EOF
     ncks -O -d bottom_top,0,5 -d bottom_top_stag,0,6 $CYCDIR/$FILE2 -o ${FILE1}.nc
 
     # WRF_P
-    set time_old = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
+    set time_old = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now -1 `
     set yro = ` echo $time_old |  cut -c1-4 `
     set mno = ` echo $time_old |  cut -c5-6 `
     set dyo = ` echo $time_old |  cut -c7-8 `
     set hro = ` echo $time_old |  cut -c9-10 `
 
-    set CYCLE_OLD = ` perl /home/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
+    set CYCLE_OLD = ` perl /home1/${LOGIN}/bin/advance_cymdh.pl $CYCLE -$CYCINT `
     if ( $ncount == 0 ) then
-     set wrf_old = /home/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
+     set wrf_old = /home1/$LOGIN/data/cycles/$GMID/prod/$MEMBER/icing/working/${CYCLE}/WRF_F/wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     else
      set wrf_old = wrfout_${dd}_${yro}-${mno}-${dyo}_${hro}:00:00.nc
     endif
@@ -746,7 +753,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -776,7 +783,7 @@ EOF
     rm -f file.in
     
     foreach nb ( $NBACK )
-     set time_past = `perl /home/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
+     set time_past = `perl /home1/${LOGIN}/bin/advance_cymdh.pl $time_now $nb `
      set yrb = ` echo $time_past |  cut -c1-4 `
      set mnb = ` echo $time_past |  cut -c5-6 `
      set dyb = ` echo $time_past |  cut -c7-8 `
@@ -879,6 +886,13 @@ EOF
 
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $RUNNING_IMAGES
    cp -p icing_plots/${yrw}${mnw}${dyw}${hrw}/*.png $ARC_IMAGES/$TYPE
+ 
+#add by yliu 20160103
+   cd $RUNNING_IMAGES 
+    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
+   cd $ARC_IMAGES/$TYPE
+    /home1/ncar_fdda/data/GMODJOBS/GE7CHUAN/housekeeping/icing/d3.icing_maps_overlay.pl
+#
 
   endif
  endif
