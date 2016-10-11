@@ -283,7 +283,7 @@
  
           ! sublimation 
           if (tc_grid(i,j,k_tower).lt.0.) then
-           ice_melt_sub(i,j) = 2.0*tc_grid(i,j,k_tower)+        &
+           ice_melt_sub(i,j) =                                  &
               0.2*((0.65*min(1.0,wspd_grid(i,j,k_tower)/10.))+  &
               0.35*(1.0-rhmap(i,j,k_tower)))
            ice_thick_grid(i,j)=ice_thick_grid(i,j)-1000*ice_melt_sub(i,j)/  &
