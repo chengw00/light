@@ -5,8 +5,10 @@
         integer, parameter :: nstn_max = nx_max*ny_max
 
         real, parameter :: undef = -999.,    &
-                           ztower = 50.
-
+                           ztower = 50.,     &
+                           area_cyl = 0.015, &  ! cross-sectional area of cyclinder (m**2)
+                           diam_cyl = 3e-2,  &  ! diameter of cylinder (m)
+                           length_cyl = 0.5  ! length 0f cylinder (m)
         ! =============
         real, dimension(nx_max,ny_max,nz_max) :: p_grid,    &
                                                  z_grid,    &
@@ -24,14 +26,16 @@
                                           swdown_grid,      &
                                           rainrate_grid
 
-        real, dimension(nx_max,ny_max) :: ice_thick_grid  &
-                                           ice_grow	      &     ! new add
-                                           ice_melt_sub       &     ! new add 
+        real, dimension(nx_max,ny_max) :: ice_thick_grid,  &
+                                          ice_grow,	   &     ! new add
+                                          ice_melt_sub           ! new add 
 
         real, dimension(nx_max,ny_max,nz_max) :: wspd_grid, &
                                                  wdir_grid
 
-        
+
+        real, dimension(nx_max,ny_max,nz_max) :: rhmap 
+       
         ! =============
         real, dimension(2)  :: uvgrid
 
@@ -78,7 +82,7 @@
         MVD = 18e-6    ! mean volume diameter (m)
         rho_w = 1000.  ! water density (kg/m**3)
         rho_i = 900.   ! ice density (kg/m**3)
-        rho_a = 1.293  ! air density (kg/m**3)      ！new add
+        !rho_a = 1.293  ! air density (kg/m**3)      !new add
         d_c = 6.2e-3   ! cylinder diameter (m)
         freezing_fraction = 1.
 
@@ -232,50 +236,63 @@
 
        
        ! ====== instantaneous icing rate ==========    
-        
         ice_thick_grid = 0.
         
         do j=1,ny
          do i=1,nx
          
-         
+          rho_a = 100*p_grid(i,j,k_tower)/ &
+                      (287.*(tc_grid(i,j,k_tower)+273.16))
+  
          !get rhmap
           if (rh_grid(i,j,k_tower).le.70.) then   
            rhmap(i,j,k_tower) = 0.0
-          else if ((rh_grid(i,j,k_tower).gt.70.).and.(rh_grid(i,j,k_tower).le.80.))
+          else if ((rh_grid(i,j,k_tower).gt.70.).and.(rh_grid(i,j,k_tower).le.80.)) then
            rhmap(i,j,k_tower) = ((rh_grid(i,j,k_tower)-70.)*0.025)
-          else if ((rh_grid(i,j,k_tower).gt.80.).and.(rh_grid(i,j,k_tower).le.90.))
+          else if ((rh_grid(i,j,k_tower).gt.80.).and.(rh_grid(i,j,k_tower).le.90.)) then
            rhmap(i,j,k_tower) = (0.25+(rh_grid(i,j,k_tower)-80.)*0.075)
           else 
            rhmap(i,j,k_tower) = 1.0
           end if 
           !get rhmap 
            
-           
+          !if these condition are met, then ice grow 
           if ( (tc_grid(i,j,k_tower).le.0.).and.    &
-               (ql_grid(i,j,k_tower).gt.0.).and.wspd_grid(i,j,k_tower).ne.0.) then    !if these condition are met, then ice grow
-            ice_grow(i,j) = 3600*0.015*ql_grid(i,j,k_tower)*rho_a*wspd_grid(i,j,k_tower)  !ice mass 
-            
-            ice_thick_grid(i,j)=ice_grow(i,j)/(0.015*3.14159*rho_i)  !ice thickness 
-          
-          else      ! otherwise, if ice don't grow, then ice melt and sublimate
-            
-            if ( (tc_grid(i,j,k_tower).gt.0.).and.(tc_grid(i,j,k_tower).le.5.)) then   
-               ice_melt_sub(i,j) = 2.0*tc_grid(i,j,k_tower)+0.2*((0.65*min(1.0,wspd_grid(i,j,k_tower)/10.))+0.35*(1.0-rhmap(i,j,k_tower)))
-            else ( tc_grid(i,j,k_tower).gt.5.) then
-               ice_melt_sub(i,j) = 10.+0.2*((0.65*min(1.0,wspd_grid(i,j,k_tower)/10.))+0.35*(1.0-rhmap(i,j,k_tower)))      !ice mass 
-            endif
-          
-            ice_thick_grid(i,j) = -ice_melt_sub(i,j)/(0.015*3.14159*rho_i)  !ice thickness 
-          
+               (ql_grid(i,j,k_tower).gt.0.).and.    &
+               (wspd_grid(i,j,k_tower).ne.0.) ) then
+            ice_grow(i,j) = 3600*                                &
+                             area_cyl*ql_grid(i,j,k_tower)*      &
+                             rho_a*wspd_grid(i,j,k_tower)      !ice mass 
+            ice_thick_grid(i,j)=ice_thick_grid(i,j) +  &
+               1000*ice_grow(i,j)/(area_cyl*pii*rho_i)         !ice thickness in mm
+            if (ice_thick_grid(i,j).lt.0.) ice_thick_grid(i,j) = 0.
           endif
-         
+
+          ! melting 
+          if (tc_grid(i,j,k_tower).ge.0.) then
+           if ( (tc_grid(i,j,k_tower).ge.0.).and.      &
+                (tc_grid(i,j,k_tower).le.5.)) then
+            ice_melt_sub(i,j) = 3600*(10./5.)*(tc_grid(i,j,k_tower))
+           else
+            ice_melt_sub(i,j) = 3600*10.
+           endif
+           ice_thick_grid(i,j)=ice_thick_grid(i,j)-1000*ice_melt_sub(i,j)/  &
+                               (area_cyl*pii*rho_i)
+           if (ice_thick_grid(i,j).lt.0.) ice_thick_grid(i,j) = 0.
+          endif
+ 
+          ! sublimation 
+          if (tc_grid(i,j,k_tower).lt.0.) then
+           ice_melt_sub(i,j) = 2.0*tc_grid(i,j,k_tower)+        &
+              0.2*((0.65*min(1.0,wspd_grid(i,j,k_tower)/10.))+  &
+              0.35*(1.0-rhmap(i,j,k_tower)))
+           ice_thick_grid(i,j)=ice_thick_grid(i,j)-1000*ice_melt_sub(i,j)/  &
+                               (area_cyl*pii*rho_i)
+           if (ice_thick_grid(i,j).lt.0.) ice_thick_grid(i,j) = 0.
+          endif
+            
          enddo
         enddo   
-
-
-
-
 
         ! =========== get station time series ===========
         nstn = nx*ny
@@ -341,9 +358,6 @@
         ! 1) find most recent accumulation in the past
         !    12-h
         !
-        ! 2) find if T > 5 deg C for more than 6-h
-        !    if so, melt accum
-        !
         do ii=1,nstn
          if (tmp_curr_stn(ii).ne.undef) then
           accum_use = 0.
@@ -355,15 +369,6 @@
            endif
           enddo
 
-          do ip1=1,ntimes
-           if (tmp_timeser_stn(ii,ip1).ne.undef) then
-            if (tmp_timeser_stn(ii,ip1).ge.5.) then
-             ncount_melt = ncount_melt + 1
-            endif
-           endif
-          enddo
-
-          if (ncount_melt.ge.6) accum_use = 0.
           accum_use = accum_use + insigr_curr_stn(ii)
           accsigr_curr_stn(ii) = accum_use
 
