@@ -14,6 +14,7 @@
                                                  u_grid,    &
                                                  v_grid,    &
                                                 rh_grid,    &
+                                                 rh_map,    &  !new add 
                                                 ql_grid,    &
                                                qct_grid
 
@@ -23,7 +24,9 @@
                                           swdown_grid,      &
                                           rainrate_grid
 
-        real, dimension(nx_max,ny_max) :: ice_thick_grid
+        real, dimension(nx_max,ny_max) :: ice_thick_grid  &
+                                           ice_grow	      &     ! new add
+                                           ice_melt_sub       &     ! new add 
 
         real, dimension(nx_max,ny_max,nz_max) :: wspd_grid, &
                                                  wdir_grid
@@ -63,7 +66,7 @@
         ! ====== icing calculation parameters ======
         integer :: np_search
 
-        real :: MVD, rho_w, rho_i, d_c,    &
+        real :: MVD, rho_w, rho_i, rho_a, d_c,    &
                 freezing_fraction, alpha
 
         real :: Rtmp0, Rtmp, mu_a, St, E
@@ -75,6 +78,7 @@
         MVD = 18e-6    ! mean volume diameter (m)
         rho_w = 1000.  ! water density (kg/m**3)
         rho_i = 900.   ! ice density (kg/m**3)
+        rho_a = 1.293  ! air density (kg/m**3)      ！new add
         d_c = 6.2e-3   ! cylinder diameter (m)
         freezing_fraction = 1.
 
@@ -226,25 +230,52 @@
 
         write(*,*) 'k_tower = ', k_tower
 
-        ! ====== instantaneous icing rate ==========
+       
+       ! ====== instantaneous icing rate ==========    
+        
         ice_thick_grid = 0.
-
+        
         do j=1,ny
          do i=1,nx
+         
+         
+         !get rhmap
+          if (rh_grid(i,j,k_tower).le.70.) then   
+           rhmap(i,j,k_tower) = 0.0
+          else if ((rh_grid(i,j,k_tower).gt.70.).and.(rh_grid(i,j,k_tower).le.80.))
+           rhmap(i,j,k_tower) = ((rh_grid(i,j,k_tower)-70.)*0.025)
+          else if ((rh_grid(i,j,k_tower).gt.80.).and.(rh_grid(i,j,k_tower).le.90.))
+           rhmap(i,j,k_tower) = (0.25+(rh_grid(i,j,k_tower)-80.)*0.075)
+          else 
+           rhmap(i,j,k_tower) = 1.0
+          end if 
+          !get rhmap 
+           
+           
           if ( (tc_grid(i,j,k_tower).le.0.).and.    &
-               (ql_grid(i,j,k_tower).gt.0.) ) then
-
-           Rtmp = (tc_grid(i,j,k_tower) + 273.15)*(9./5.)
-           mu_a = ( (3.62e-7)*4.44822/(0.3048000**2) ) * (Rtmp/Rtmp0)**1.5 * (Rtmp0+198.72)/(Rtmp0+198.72)  ! Pa s
-           St = (wspd_grid(i,j,k_tower)* MVD**2 * rho_w)/(9* mu_a* d_c)
-           E  = St**2 /(St+0.7)**2
-           density_air = 100.*p_grid(i,j,k_tower)/(287.*  &
-               (tc_grid(i,j,k_tower)+273.16))
-
-           ice_thick_grid(i,j) = 3600*1000* E*ql_grid(i,j,k_tower)*density_air*wspd_grid(i,j,k_tower)*freezing_fraction/rho_i
+               (ql_grid(i,j,k_tower).gt.0.).and.wspd_grid(i,j,k_tower).ne.0.) then    !if these condition are met, then ice grow
+            ice_grow(i,j) = 3600*0.015*ql_grid(i,j,k_tower)*rho_a*wspd_grid(i,j,k_tower)  !ice mass 
+            
+            ice_thick_grid(i,j)=ice_grow(i,j)/(0.015*3.14159*rho_i)  !ice thickness 
+          
+          else      ! otherwise, if ice don't grow, then ice melt and sublimate
+            
+            if ( (tc_grid(i,j,k_tower).gt.0.).and.(tc_grid(i,j,k_tower).le.5.)) then   
+               ice_melt_sub(i,j) = 2.0*tc_grid(i,j,k_tower)+0.2*((0.65*min(1.0,wspd_grid(i,j,k_tower)/10.))+0.35*(1.0-rhmap(i,j,k_tower)))
+            else ( tc_grid(i,j,k_tower).gt.5.) then
+               ice_melt_sub(i,j) = 10.+0.2*((0.65*min(1.0,wspd_grid(i,j,k_tower)/10.))+0.35*(1.0-rhmap(i,j,k_tower)))      !ice mass 
+            endif
+          
+            ice_thick_grid(i,j) = -ice_melt_sub(i,j)/(0.015*3.14159*rho_i)  !ice thickness 
+          
           endif
+         
          enddo
-        enddo
+        enddo   
+
+
+
+
 
         ! =========== get station time series ===========
         nstn = nx*ny
