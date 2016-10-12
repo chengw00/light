@@ -5,7 +5,10 @@
         integer, parameter :: nstn_max = 2500
 
         real, parameter :: undef = -999.,    &
-                           ztower = 50.
+                           ztower = 50.,     &
+                           area_cyl = 0.015, &  ! cross-sectional area of cyclinder (m**2)
+                           diam_cyl = 3e-2,  &  ! diameter of cylinder (m)
+                           length_cyl = 0.5  ! length 0f cylinder (m)
 
         ! =============
         real, dimension(nx_max,ny_max,nz_max) :: p_grid,    &
@@ -14,7 +17,6 @@
                                                  u_grid,    &
                                                  v_grid,    &
                                                 rh_grid,    &
-                                                rhmap,      &
                                                 ql_grid,    &
                                                qct_grid
 
@@ -30,7 +32,8 @@
         real, dimension(nx_max,ny_max,nz_max) :: wspd_grid, &
                                                  wdir_grid
 
-        
+        real, dimension(nx_max,ny_max,nz_max) :: rhmap
+ 
         ! =============
         real, dimension(2)  :: uvgrid
 

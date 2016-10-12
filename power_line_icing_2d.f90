@@ -16,7 +16,6 @@
                                                  u_grid,    &
                                                  v_grid,    &
                                                 rh_grid,    &
-                                                 rh_map,    &  !new add 
                                                 ql_grid,    &
                                                qct_grid
 
