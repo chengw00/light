@@ -350,18 +350,13 @@
          enddo
         enddo
 
-
-        ! ======= check if above 5 deg C for more than ===
-        !         6 hours 
-        
         ! ==
         ! 1) find most recent accumulation in the past
         !    12-h
         !
         do ii=1,nstn
+         accum_use = 0.
          if (tmp_curr_stn(ii).ne.undef) then
-          accum_use = 0.
-          ncount_melt = 0
           do ip1=ntimes-12,ntimes
            if ( (tmp_timeser_stn(ii,ip1).ne.undef).and. &
                 (accsigr_timeser_stn(ii,ip1).ne.undef) ) then
@@ -370,10 +365,9 @@
           enddo
 
           accum_use = accum_use + insigr_curr_stn(ii)
-          accsigr_curr_stn(ii) = accum_use
-
          endif
 
+         accsigr_curr_stn(ii) = accum_use
         enddo
         ! ======== output to file =======
         write(99,1000)  'latitude     ',      &
