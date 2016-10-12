@@ -14,7 +14,7 @@
                                                  u_grid,    &
                                                  v_grid,    &
                                                 rh_grid,    &
-                                                rh_map,     &
+                                                rhmap,      &
                                                 ql_grid,    &
                                                qct_grid
 
